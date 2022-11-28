@@ -1,42 +1,44 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
+
+import { productos } from "../mocks/item.mocks";
+
 import ItemList from "./ItemList";
 
-const productos = [
-  {
-    id: "1",
-    titulo: "Tormenta de Espadas",
-    autor: "George RR Martin",
-    stock: 10,
-    img: "https://contentv2.tap-commerce.com/cover/large/9789506442415_1.jpg?id_com=1113",
-  },
-  {
-    id: "2",
-    titulo: "Festin de Cuervos",
-    autor: "George RR Martin",
-    stock: 10,
-    img: "https://contentv2.tap-commerce.com/cover/large/9789506442477_1.jpg?id_com=1113",
-  },
-  {
-    id: "3",
-    titulo: "Danza de Dragones",
-    autor: "George RR Martin",
-    stock: 10,
-    img: "https://contentv2.tap-commerce.com/cover/original/9789506442545_1.jpg?id_com=1165",
-  },
-];
 
+const ItemListContainer = () => {
 
-const ItemListContainer = ({greeting}) => {
-    const [products, setProducts] = useState([]);
+  const {category} = useParams();
 
-    const productsList = new Promise((resolve) => setTimeout(() => {resolve(productos);},3000)
-    );
+  const [products, setProducts] = useState([]);
 
-    productsList.then((data) => setProducts(data));
+  useEffect(() => {
+    new Promise((resolve) =>
+    setTimeout(() => {
+        resolve(productos);
+    }, 3000)
+    ).then((data) => {
+    if (category) {
+      const categories = data.filter(
+      (product) => product.category === category
+      );
+      setProducts(categories);
+    } 
+    else {
+      setProducts(data);
+    }
+    });
+  }, [category]);
+
+  if(products.length===0){
+    return <p>Loading . . .</p>
+  }
+
     
-    return <div>
-        <ItemList products={products}/>
-    </div>;
+  return <div>
+    <ItemList products={products}/>
+
+  </div>;
 };
 
 export default ItemListContainer;

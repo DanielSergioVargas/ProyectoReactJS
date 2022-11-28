@@ -1,7 +1,7 @@
 
 
 export const CartWidget = () => {
-    return
+    return 
     <i className="bi bi-cart"></i>
     };
 
